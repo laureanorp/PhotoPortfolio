@@ -47,6 +47,7 @@ def resize_image(input_path: str, output_path: str) -> bool:
         logging.error(f"Error resizing image {input_path}: {e}")
         return False
 
+
 def get_next_index(output_folder: str) -> int:
     """
     Scan the output folder and find the next available numeric index
@@ -158,12 +159,27 @@ def update_html_only_photogrid(html_file: str, output_folder: str, new_images: L
     logging.info(f"🌟 HTML updated successfully: added {len(new_images)} new image(s).")
 
 
-def git_commit_and_push(commit_message: str = "Add new photos (automatically updated HTML)") -> None:
-    """ Adds all changes, commits with the given message, and pushes to the current branch. """
-    logging.info("📦 Pushing changes to portfolio repo...")
+def git_commit_and_push(num_new_images: int, commit_message: str = None) -> None:
+    """
+    Adds all changes, commits with the given message, and pushes to the current branch,
+    but asks for user confirmation before pushing.
+    """
+    if commit_message is None:
+        commit_message = f"Add {num_new_images} new photos (automatically updated HTML)"
+
+    logging.info(f"📦 Ready to push {num_new_images} new photo(s) to portfolio repo.")
+
+    while True:
+        confirm = input(f"Do you want to commit and push these changes? (Y/N): ").strip().lower()
+        if confirm in ('y', 'n'):
+            break
+        print("Please enter 'Y' or 'N'.")
+
+    if confirm != 'y':
+        logging.info("Push cancelled by user.")
+        return
 
     try:
-        # Check if there are any changes
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         if not status.stdout.strip():
             logging.info("No changes detected in git. Nothing to commit or push.")
@@ -190,7 +206,7 @@ def main() -> None:
         logging.info("\n📂 Process Complete!")
         logging.info(f"✅ {len(new_images)} new image(s) resized and saved to '{output_folder}'.")
         logging.info(f"🖼️ {len(new_images)} new image(s) added to the HTML file '{html_file}'.")
-        git_commit_and_push()
+        git_commit_and_push(len(new_images))
     else:
         logging.info("No images processed.")
 
