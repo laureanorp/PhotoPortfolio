@@ -4,6 +4,7 @@ import subprocess
 from typing import List
 from PIL import Image
 from bs4 import BeautifulSoup
+import unicodedata
 
 logging.basicConfig(
     level=logging.INFO,
@@ -17,6 +18,13 @@ html_file = "index.html"
 
 MAX_WIDTH = 1500
 MAX_HEIGHT = 2000
+
+
+def normalize_filename(filename: str) -> str:
+    """
+    Normalize unicode filename to NFC form to avoid issues with special characters like ñ.
+    """
+    return unicodedata.normalize('NFC', filename)
 
 
 def resize_image(input_path: str, output_path: str) -> bool:
@@ -93,7 +101,8 @@ def process_images(input_folder: str, output_folder: str) -> List[str]:
 
     for fname in input_files:
         input_path = os.path.join(input_folder, fname)
-        output_fname = f"{idx}_{fname}"
+        normalized_name = normalize_filename(fname)
+        output_fname = f"{idx}_{normalized_name}"
         output_path = os.path.join(output_folder, output_fname)
 
         success = resize_image(input_path, output_path)
