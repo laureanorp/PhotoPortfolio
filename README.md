@@ -1,13 +1,16 @@
-# Photo Portfolio Upload Script
+# Photo Portfolio + photo uploading script
+
+## Why
 
 I wanted a plain and simple web for uploading my photos, publishing it via GitHub pages. Pure HTML/CSS, no JS, no libraries.
 
 Since I didn't want to manually add new images to my HTML, I coded a (dirty but functional) script that compresses and uploads new images to the portfolio, also pushing the changes to GitHub. 
+
 Images to be added to the portfolio are placed on an input folder. When the script runs, they are compressed to a configurable max size, an index (number) is added to the name, and they are moved to the output folder. The necessary HTML img tags are added to the HTML and the changes are pushed to your repo.
 
 To check your portfolio, you must configure Github Pages in your repo settings.
 
-## Setup & Usage
+## Setup & usage
 
 1. Clone the repository and update the `input_folder` and `output_folder` paths in `upload_images_script.py` to match your local setup.
 
